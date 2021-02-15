@@ -1,0 +1,2 @@
+int8 operator_input_device                 # Details at include/tod_msgs/inputDevice.h
+bool successfully_changed
