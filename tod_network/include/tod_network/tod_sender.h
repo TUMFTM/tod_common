@@ -1,21 +1,19 @@
-#ifndef TOD_SENDER_H
-#define TOD_SENDER_H
-
-#include "ros/ros.h"
-#include "tod_msgs/StatusMsg.h"
-#include "tod_network/tod_network.h"
-#include "tod_msgs/connectionStatus.h"
+// Copyright 2020 Feiler
+#pragma once
+#include <ros/ros.h>
+#include <tod_msgs/Status.h>
+#include <tod_network/udp_sender.h>
 #include <memory>
+#include <algorithm>
 
-namespace tod_network
-{
+namespace tod_network {
+
 template <typename T>
-class Sender
-{
+class Sender {
 private:
     struct RosMsgSender {
         ros::Subscriber sendMsgSubs;
-        tod_network::UdpSender* udpSender;
+        std::unique_ptr<tod_network::UdpSender> udpSender{nullptr};
         bool printedInfo{false};
     };
 
@@ -37,49 +35,53 @@ public:
     void run() { ros::spin(); }
 
     void add_processer(const std::string &topic, const int port) {
-        _rosMsgSenders.push_back(new RosMsgSender);
-        _rosMsgSenders.back()->udpSender = new tod_network::UdpSender(_receiverIp, port);
-        _rosMsgSenders.back()->sendMsgSubs = _n.subscribe<T>(topic, 1,
-                                                             boost::bind(&Sender::sendMessageReceived,
-                                                                         this, _1, _rosMsgSenders.back()));
-        ROS_INFO("%s: created sender for topic %s on port %d",
-                 ros::this_node::getName().c_str(), topic.c_str(), port);
+        auto sender = _rosMsgSenders.emplace_back(std::make_shared<RosMsgSender>());
+        sender->udpSender = std::make_unique<tod_network::UdpSender>(_receiverIp, port);
+        sender->sendMsgSubs = _n.subscribe<T>(
+            topic, 1, boost::bind(&Sender::sendMessageReceived, this, _1, sender));
+    }
+
+    void send_in_control_mode(const uint8_t mode) {
+        _sendingControlModes.push_back(mode);
     }
 
 private:
     std::string _receiverIp{"127.0.0.1"};
-    std::vector<RosMsgSender*> _rosMsgSenders;
-    int _connectionStat{ConnectionStatus::IDLE};
+    std::vector<std::shared_ptr<RosMsgSender>> _rosMsgSenders;
+    uint8_t _connectionStat{tod_msgs::Status::TOD_STATUS_IDLE};
+    uint8_t _controlMode;
     ros::Subscriber _statusSubs;
     ros::NodeHandle &_n;
     bool _senderInVehicle;
+    std::vector<uint8_t> _sendingControlModes;
 
     bool connected() {
-        return _connectionStat != ConnectionStatus::IDLE;
+        return _connectionStat != tod_msgs::Status::TOD_STATUS_IDLE;
     }
 
-    void statusMessageReceived(const tod_msgs::StatusMsg &msg) {
+    void statusMessageReceived(const tod_msgs::Status &msg) {
         _connectionStat = msg.tod_status;
-        if (connected()) {
+        _controlMode = _senderInVehicle ? msg.vehicle_control_mode : msg.operator_control_mode;
+        if (connected() && in_sending_control_mode()) {
             if (_senderInVehicle && _receiverIp != msg.operator_operator_ip_address) {
                 _receiverIp = msg.operator_operator_ip_address;
                 ROS_INFO("%s: sending to operator ip address %s",
                          ros::this_node::getName().c_str(), _receiverIp.c_str());
-                for (RosMsgSender *rosMsgSender : _rosMsgSenders)
-                    rosMsgSender->udpSender->changeDestSpecs(_receiverIp);
+                for (auto rosMsgSender : _rosMsgSenders)
+                    rosMsgSender->udpSender->change_destination(_receiverIp);
             } else if (!_senderInVehicle && _receiverIp != msg.vehicle_vehicle_ip_address) {
                 _receiverIp = msg.vehicle_vehicle_ip_address;
                 ROS_INFO("%s: sending to vehicle ip address %s",
                          ros::this_node::getName().c_str(), _receiverIp.c_str());
-                for (RosMsgSender *rosMsgSender : _rosMsgSenders)
-                    rosMsgSender->udpSender->changeDestSpecs(_receiverIp);
+                for (auto rosMsgSender : _rosMsgSenders)
+                    rosMsgSender->udpSender->change_destination(_receiverIp);
             }
         }
     }
 
-    void sendMessageReceived(const ros::MessageEvent<T const>& event, RosMsgSender *rosMsgSender) {
-        if (connected()) {
-            rosMsgSender->udpSender->sendRosMsg(*event.getMessage());
+    void sendMessageReceived(const ros::MessageEvent<T const>& event, std::shared_ptr<RosMsgSender> rosMsgSender) {
+        if (connected() && in_sending_control_mode()) {
+            rosMsgSender->udpSender->send_ros_msg(*event.getMessage());
             if (!rosMsgSender->printedInfo) {
                 ROS_INFO("%s: sending topic %s", ros::this_node::getName().c_str(),
                          rosMsgSender->sendMsgSubs.getTopic().c_str());
@@ -87,8 +89,13 @@ private:
             }
         }
     }
-}; // class Sender
 
+    bool in_sending_control_mode(){
+        if (_sendingControlModes.size() == 0)
+            return true;
+
+        return std::any_of(_sendingControlModes.begin(), _sendingControlModes.end(),
+            [this](uint8_t sendingMode){ return _controlMode == sendingMode; });
+    }
+};
 }; // namespace tod_network
-
-#endif // TOD_SENDER_H

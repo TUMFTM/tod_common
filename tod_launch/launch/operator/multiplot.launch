@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="rqt_multiplot_kpi_monitor" pkg="rqt_multiplot" type="rqt_multiplot"
+        args="--multiplot-config $(find tod_launch)/xml/operator_rqt_multiplot.xml --multiplot-run-all"/>
+</launch>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="launchVehicleBridge"/>
+    <arg name="vehicleID"/>
+    <arg name="mode"/>
+        <group if="$(eval launchVehicleBridge)">
+            <!-- Common Software -->
+            <include file="$(find tod_vehicle_bridge)/launch/tod_vehicle_bridge.launch">
+                <arg name="isVehicle" value="true"/>
+                <arg name="isOperator" value="false"/>
+                <arg name="vehicleID" value="$(arg vehicleID)"/>
+            </include>
+
+            <!-- Vehicle Hardware -->
+            <include file="$(find tod_rc-car_bridge)/launch/tod_rc-car_bridge.launch"
+                if="$(eval vehicleID=='rc-car')"/>
+
+            <!-- Vehicle Simulation -->
+            <include file="$(find tod_vehicle_sim)/launch/tod_vehicle_sim.launch" if="$(eval mode =='onlySim')">
+                <arg name="vehicleID" value="$(arg vehicleID)"/>
+            </include>
+        </group>
+</launch>

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="vehicleID" default="tum-q7"/>  <!-- tum-q7, lgsvl, rc-car. -->
+
+    <!-- Vehicle Interface -->
+    <arg name="launchVehicleBridge" default="true"/>
+
+    <!-- Operator Interface -->
+    <arg name="launchVisual" default="true"/>
+    <arg name="launchInputDevices" default="true"/>
+
+    <!-- Perception -->
+    <arg name="launchVideo" default="true"/>
+    <arg name="launchLidar" default="true"/>
+    <arg name="launchProjection" default="true"/>
+
+    <!-- Control -->
+    <arg name="launchDirectControl" default="true"/>
+
+    <!-- Common -->
+    <arg name="launchTransform" default="true"/>
+    <arg name="launchMultiplot" default="true"/>
+
+    <include file="$(find tod_launch)/launch/operator/vehicle_interface.launch">
+        <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/operator_interface.launch">
+        <arg name="launchVisual" value="$(arg launchVisual)"/>
+        <arg name="launchInputDevices" value="$(arg launchInputDevices)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/perception.launch">
+        <arg name="launchVideo" value="$(arg launchVideo)"/>
+        <arg name="launchLidar" value="$(arg launchLidar)"/>
+        <arg name="launchProjection" value="$(arg launchProjection)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/control.launch">
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+
+    <include file="$(find tod_launch)/launch/operator/common.launch">
+        <arg name="launchMultiplot" value="$(arg launchMultiplot)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+</launch>

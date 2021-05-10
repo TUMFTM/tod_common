@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="isVehicle" default="false"/>
+    <arg name="isOperator" default="false"/>
+    <arg name="vehicleID" default="tum-q7"/>
+
+    <group ns="Operator/Transform" if="$(eval isOperator)">
+        <node pkg="tod_transform" type="CommonOdomTransformPublisher" name="CommonOdomTransformPublisher">
+            <remap from="odometry" to="/Operator/VehicleBridge/odometry"/>
+        </node>
+
+        <node name="CommonTransformTreePublisher" pkg="tod_transform" type="CommonTransformTreePublisher"
+              output="screen">
+            <rosparam command="load"
+                      file="$(find tod_vehicle_config)/vehicle_config/$(arg vehicleID)/vehicle-transforms.yaml"/>
+        </node>
+    </group>
+
+    <group ns="Vehicle/Transform" if="$(eval isVehicle)">
+        <node pkg="tod_transform" type="CommonOdomTransformPublisher" name="CommonOdomTransformPublisher">
+            <remap from="odometry" to="/Vehicle/VehicleBridge/odometry"/>
+        </node>
+
+        <node name="CommonTransformTreePublisher" pkg="tod_transform" type="CommonTransformTreePublisher"
+              output="screen">
+            <rosparam command="load"
+                      file="$(find tod_vehicle_config)/vehicle_config/$(arg vehicleID)/vehicle-transforms.yaml"/>
+        </node>
+    </group>
+</launch>
