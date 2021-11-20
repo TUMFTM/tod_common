@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <tod_msgs/Status.h>
 #include <tod_network/udp_receiver.h>
+#include <tod_msgs/PaketInfo.h>
 #include <memory>
 
 namespace tod_network {
@@ -11,11 +12,12 @@ template <typename T>
 class Receiver {
 private:
     struct RosMsgReceiver{
-        ros::Publisher recvMsgPubs;
+        ros::Publisher recvMsgPubs, recvMsgPaketInfoPubs;
         std::unique_ptr<tod_network::UdpReceiver> udpReceiver{nullptr};
         bool printedInfo{false};
         std::unique_ptr<std::thread> thread{nullptr};
         T msg;
+        tod_msgs::PaketInfo paketInfoMsg;
     };
 
 public:
@@ -26,11 +28,16 @@ public:
         auto receiver = _rosMsgReceivers.emplace_back(std::make_shared<RosMsgReceiver>());
         receiver->udpReceiver = std::make_unique<tod_network::UdpReceiver>(port);
         receiver->recvMsgPubs = _n.advertise<T>(topic, 1);
+        receiver->recvMsgPaketInfoPubs = _n.advertise<tod_msgs::PaketInfo>(topic + "_paket_info", 1);
+    }
+
+    void receive() {
+        for (auto receiver : _rosMsgReceivers)
+            receiver->thread = std::make_unique<std::thread>(&Receiver::receive_msgs, this, receiver);
     }
 
     void run() {
-        for (auto receiver : _rosMsgReceivers)
-            receiver->thread = std::make_unique<std::thread>(&Receiver::receive_msgs, this, receiver);
+        receive();
         ros::spin();
     }
 
@@ -41,7 +48,17 @@ private:
 
     void receive_msgs(std::shared_ptr<RosMsgReceiver> receiver) {
         while (ros::ok()) {
-            receiver->udpReceiver->receive_ros_msg(receiver->msg);
+            int sizeByte = receiver->udpReceiver->receive_ros_msg(receiver->msg);
+
+            // publish paket info msg
+            receiver->paketInfoMsg.header.stamp = ros::Time::now();
+            receiver->paketInfoMsg.seqNum = receiver->msg.header.seq;
+            receiver->paketInfoMsg.sizeBit = sizeByte * 8;
+            receiver->paketInfoMsg.latencyUsec = int64_t(ros::Time::now().toNSec()/1000
+                                                         - receiver->msg.header.stamp.toNSec()/1000);
+            receiver->recvMsgPaketInfoPubs.publish(receiver->paketInfoMsg);
+
+            // publish restamped data msg
             receiver->msg.header.stamp = ros::Time::now();
             receiver->recvMsgPubs.publish(receiver->msg);
             if (!receiver->printedInfo) {

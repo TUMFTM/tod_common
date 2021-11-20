@@ -32,13 +32,13 @@ public:
         _statusSubs = _n.subscribe(statusTopic, 1, &Sender::statusMessageReceived, this);
     }
 
-    void run() { ros::spin(); }
+    void run() const { ros::spin(); }
 
     void add_processer(const std::string &topic, const int port) {
         auto sender = _rosMsgSenders.emplace_back(std::make_shared<RosMsgSender>());
         sender->udpSender = std::make_unique<tod_network::UdpSender>(_receiverIp, port);
         sender->sendMsgSubs = _n.subscribe<T>(
-            topic, 1, boost::bind(&Sender::sendMessageReceived, this, _1, sender));
+            topic, 10, boost::bind(&Sender::sendMessageReceived, this, _1, sender));
     }
 
     void send_in_control_mode(const uint8_t mode) {
@@ -81,10 +81,10 @@ private:
 
     void sendMessageReceived(const ros::MessageEvent<T const>& event, std::shared_ptr<RosMsgSender> rosMsgSender) {
         if (connected() && in_sending_control_mode()) {
-            rosMsgSender->udpSender->send_ros_msg(*event.getMessage());
+            int nofBytesSent = rosMsgSender->udpSender->send_ros_msg(*event.getMessage());
             if (!rosMsgSender->printedInfo) {
-                ROS_INFO("%s: sending topic %s", ros::this_node::getName().c_str(),
-                         rosMsgSender->sendMsgSubs.getTopic().c_str());
+                ROS_INFO("%s: sending topic %s - msg size %d", ros::this_node::getName().c_str(),
+                         rosMsgSender->sendMsgSubs.getTopic().c_str(), nofBytesSent);
                 rosMsgSender->printedInfo = true;
             }
         }

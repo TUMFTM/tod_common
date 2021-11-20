@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID" default="tum-q7"/>  <!-- tum-q7, lgsvl, rc-car. -->
+    <arg name="vehicleID" default="lgsvl"/>  <!-- tum-q7, lgsvl, rc-car. -->
 
     <!-- Vehicle Interface -->
     <arg name="launchVehicleBridge" default="true"/>
@@ -18,33 +18,34 @@
     <arg name="launchDirectControl" default="true"/>
 
     <!-- Common -->
-    <arg name="launchTransform" default="true"/>
-    <arg name="launchMultiplot" default="true"/>
+    <arg name="launchMultiplot" default="false"/>
+    <arg name="launchLogging" default="false"/>
 
-    <include file="$(find tod_launch)/launch/operator/vehicle_interface.launch">
+    <include file="$(find tod_launch)/launch/operator/operator_vehicle_interface.launch">
         <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/operator_interface.launch">
+    <include file="$(find tod_launch)/launch/operator/operator_operator_interface.launch">
         <arg name="launchVisual" value="$(arg launchVisual)"/>
         <arg name="launchInputDevices" value="$(arg launchInputDevices)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/perception.launch">
+    <include file="$(find tod_launch)/launch/operator/operator_perception.launch">
         <arg name="launchVideo" value="$(arg launchVideo)"/>
         <arg name="launchLidar" value="$(arg launchLidar)"/>
         <arg name="launchProjection" value="$(arg launchProjection)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/control.launch">
+    <include file="$(find tod_launch)/launch/operator/operator_control.launch">
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/operator/common.launch">
+    <include file="$(find tod_launch)/launch/operator/operator_common.launch">
         <arg name="launchMultiplot" value="$(arg launchMultiplot)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="launchLogging" value="$(arg launchLogging)"/>
     </include>
 </launch>

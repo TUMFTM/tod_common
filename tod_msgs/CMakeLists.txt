@@ -12,14 +12,18 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     DIRECTORY msg
     FILES
-        PrimaryControlCmd.msg
-        SecondaryControlCmd.msg
+        ColoredPoint.msg
+        ColoredPolygon.msg
         KeyPress.msg
-        PaketInfo.msg
         ObjectData.msg
         ObjectList.msg
-        Status.msg
+        PaketInfo.msg
+        PrimaryControlCmd.msg
         SafetyDriverStatus.msg
+        SecondaryControlCmd.msg
+        Status.msg
+        Trajectory.msg
+        TrajectoryPoint.msg
         VehicleData.msg
         VideoInfo.msg
     )

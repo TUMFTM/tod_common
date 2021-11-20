@@ -14,9 +14,14 @@ enum VehiclePorts { // only what is sent via udp
     RX_VIDEO_RTSP = 8554,
 };
 
+enum AutoboxPorts {
+    RX_DIRECTCONTROL_AUTOBOX_COMMAND = 30000
+};
+
 enum OperatorPorts { // only what is sent via udp
     RX_LIDAR_OBJECTLIST = 50000,
     RX_VEHICLESTATE_VEHICLEDATA = 50002,
+    // 50003
     RX_VEHICLESTATE_ODOMETRY = 50005,
     RX_VEHICLESTATE_GPS = 50006,
     RX_BITRATE_PREDICTIONS = 50011,

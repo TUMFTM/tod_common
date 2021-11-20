@@ -86,7 +86,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/Operator/DirectControl/primary_control_cmd</topic>
+                                    <topic>/Operator/CommandCreation/primary_control_cmd</topic>
                                     <type>tod_msgs/PrimaryControlCmd</type>
                                 </x_axis>
                                 <y_axis>
@@ -99,7 +99,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/Operator/DirectControl/primary_control_cmd</topic>
+                                    <topic>/Operator/CommandCreation/primary_control_cmd</topic>
                                     <type>tod_msgs/PrimaryControlCmd</type>
                                 </y_axis>
                             </axes>

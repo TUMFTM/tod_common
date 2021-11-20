@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID" default="tum-q7"/> <!-- tum-q7, rc-car, lgsvl -->
-    <arg name="mode" default="onlySim"/> <!-- vehicle, onlySim -->
+    <arg name="vehicleID" default="lgsvl"/> <!-- tum-q7, rc-car. -->
+    <arg name="mode" default="playbackAll"/> <!-- vehicle, playbackAll, playbackSim, onlySim -->
 
     <!-- Vehicle Interface -->
     <arg name="launchVehicleBridge" default="true"/>
@@ -13,26 +13,31 @@
     <arg name="launchVideo" default="true"/>
     <arg name="launchLidar" default="true"/>
 
-    <include file="$(find tod_launch)/launch/vehicle/vehicle_interface.launch">
+    <!-- Common -->
+    <arg name="launchLogging" default="false"/>
+
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_vehicle_interface.launch">
         <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
         <arg name="mode" value="$(arg mode)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/vehicle/operator_interface.launch"/>
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_operator_interface.launch"/>
 
-    <include file="$(find tod_launch)/launch/vehicle/perception.launch">
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_perception.launch">
         <arg name="launchVideo" value="$(arg launchVideo)"/>
         <arg name="launchLidar" value="$(arg launchLidar)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/vehicle/control.launch">
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_control.launch">
         <arg name="launchDirectControl" value="$(arg launchDirectControl)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
-    <include file="$(find tod_launch)/launch/vehicle/common.launch">
+    <include file="$(find tod_launch)/launch/vehicle/vehicle_common.launch">
         <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="mode" value="$(arg mode)"/>
+        <arg name="launchLogging" value="$(arg launchLogging)"/>
     </include>
 </launch>
