@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="vehicleID" default="lgsvl"/> <!-- tum-q7, rc-car. -->
-    <arg name="mode" default="playbackAll"/> <!-- vehicle, playbackAll, playbackSim, onlySim -->
+    <arg name="mode" default="onlySim"/> <!-- vehicle, playbackAll, playbackSim, onlySim -->
 
     <!-- Vehicle Interface -->
     <arg name="launchVehicleBridge" default="true"/>
 
     <!-- Control -->
     <arg name="launchDirectControl" default="true"/>
+    <arg name="launchPerceptionModification" default="true"/>
+    <arg name="launchNavigation" default="true"/>
 
     <!-- Perception -->
     <arg name="launchVideo" default="true"/>
@@ -33,6 +35,8 @@
     <include file="$(find tod_launch)/launch/vehicle/vehicle_control.launch">
         <arg name="launchDirectControl" value="$(arg launchDirectControl)"/>
         <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="launchPerceptionModification" value="$(arg launchPerceptionModification)"/>
+        <arg name="launchNavigation" value="$(arg launchNavigation)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/vehicle/vehicle_common.launch">

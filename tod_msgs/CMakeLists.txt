@@ -12,9 +12,11 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     DIRECTORY msg
     FILES
+        Color.msg
         ColoredPoint.msg
         ColoredPolygon.msg
         KeyPress.msg
+        Mesh.msg
         ObjectData.msg
         ObjectList.msg
         PaketInfo.msg

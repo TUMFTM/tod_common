@@ -2,6 +2,8 @@
 <launch>
     <arg name="launchDirectControl"/>
     <arg name="vehicleID"/>
+    <arg name="launchPerceptionModification"/>
+    <arg name="launchNavigation"/>
 
     <include file="$(find tod_command_creation)/launch/tod_command_creation.launch">
         <arg name="vehicleID" value="$(arg vehicleID)"/>
@@ -13,4 +15,16 @@
         if="$(eval launchDirectControl)">
     </include>
 
+    <include file="$(find tod_perception_modification)/launch/tod_perception_modification.launch"
+        if="$(eval launchPerceptionModification)">
+        <arg name="isVehicle" value="true"/>
+        <arg name="isOperator" value="false"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    </include>
+
+    <include file="$(find tod_navigation)/launch/tod_navigation.launch"
+        if="$(eval launchNavigation)">
+        <arg name="isVehicle" value="true"/>
+        <arg name="isOperator" value="false"/>
+    </include>
 </launch>

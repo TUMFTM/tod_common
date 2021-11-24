@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="vehicleID"/>
+    <arg name="launchPerceptionModification"/>
+    <arg name="launchNavigation"/>
 
     <include file="$(find tod_command_creation)/launch/tod_command_creation.launch">
         <arg name="vehicleID" value="$(arg vehicleID)"/>
@@ -8,4 +10,15 @@
         <arg name="isOperator" value="true"/>
     </include>
 
+    <include file="$(find tod_perception_modification)/launch/tod_perception_modification.launch"
+        if="$(eval launchPerceptionModification)">
+        <arg name="isVehicle" value="false"/>
+        <arg name="isOperator" value="true"/>
+    </include>
+
+    <include file="$(find tod_navigation)/launch/tod_navigation.launch"
+        if="$(eval launchNavigation)">
+        <arg name="isVehicle" value="false"/>
+        <arg name="isOperator" value="true"/>
+    </include>
 </launch>

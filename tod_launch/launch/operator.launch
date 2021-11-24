@@ -16,6 +16,8 @@
 
     <!-- Control -->
     <arg name="launchDirectControl" default="true"/>
+    <arg name="launchPerceptionModification" default="true"/>
+    <arg name="launchNavigation" default="true"/>
 
     <!-- Common -->
     <arg name="launchMultiplot" default="false"/>
@@ -41,6 +43,8 @@
 
     <include file="$(find tod_launch)/launch/operator/operator_control.launch">
         <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="launchPerceptionModification" value="$(arg launchPerceptionModification)"/>
+        <arg name="launchNavigation" value="$(arg launchNavigation)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/operator/operator_common.launch">
