@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID"/>
     <arg name="launchVisual"/>
     <arg name="launchInputDevices"/>
 
@@ -9,9 +8,7 @@
         <arg name="isOperator" value="true"/>
     </include>
 
-    <include file="$(find tod_visual)/launch/tod_visual.launch" if="$(eval launchVisual)">
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
-    </include>
+    <include file="$(find tod_visual)/launch/tod_visual.launch" if="$(eval launchVisual)"/>
 
     <include file="$(find tod_input_devices)/launch/tod_input_devices.launch" if="$(eval launchInputDevices)">
         <arg name = "ConfigFile" value="$(find tod_input_devices)/config/virtual.yaml"/>

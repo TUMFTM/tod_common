@@ -15,20 +15,24 @@ private:
         ros::Publisher recvMsgPubs, recvMsgPaketInfoPubs;
         std::unique_ptr<tod_network::UdpReceiver> udpReceiver{nullptr};
         bool printedInfo{false};
+        bool restamp{false};
         std::unique_ptr<std::thread> thread{nullptr};
         T msg;
         tod_msgs::PaketInfo paketInfoMsg;
     };
 
 public:
-    Receiver(ros::NodeHandle &n, int port) : _n(n) { add_processer("/received_topic", port); }
+    Receiver(ros::NodeHandle &n, int port, bool restamp = false) : _n(n) {
+        add_processer("/received_topic", port, restamp);
+    }
     explicit Receiver(ros::NodeHandle &n) : _n(n) {}
 
-    void add_processer(const std::string &topic, const int port) {
+    void add_processer(const std::string &topic, const int port, const bool restamp = false) {
         auto receiver = _rosMsgReceivers.emplace_back(std::make_shared<RosMsgReceiver>());
         receiver->udpReceiver = std::make_unique<tod_network::UdpReceiver>(port);
         receiver->recvMsgPubs = _n.advertise<T>(topic, 1);
         receiver->recvMsgPaketInfoPubs = _n.advertise<tod_msgs::PaketInfo>(topic + "_paket_info", 1);
+        receiver->restamp = restamp;
     }
 
     void receive() {
@@ -59,7 +63,8 @@ private:
             receiver->recvMsgPaketInfoPubs.publish(receiver->paketInfoMsg);
 
             // publish restamped data msg
-            receiver->msg.header.stamp = ros::Time::now();
+            if (receiver->restamp)
+                receiver->msg.header.stamp = ros::Time::now();
             receiver->recvMsgPubs.publish(receiver->msg);
             if (!receiver->printedInfo) {
                 receiver->printedInfo = true;

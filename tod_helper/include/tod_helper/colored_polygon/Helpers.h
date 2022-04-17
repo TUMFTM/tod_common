@@ -18,4 +18,16 @@ inline static geometry_msgs::PolygonStamped to_polygon(const tod_msgs::ColoredPo
     return polygon;
 }
 
+inline tod_msgs::ColoredPolygon to_colored_polygon(const geometry_msgs::PolygonStamped &polygonStamped,
+        const std_msgs::ColorRGBA color) {
+    tod_msgs::ColoredPolygon coloredPolygon;
+    coloredPolygon.header = polygonStamped.header;
+    for (const auto &pt : polygonStamped.polygon.points) {
+        tod_msgs::ColoredPoint cPoint;
+        cPoint.color = color;
+        cPoint.point = pt;
+        coloredPolygon.points.emplace_back(cPoint);
+    }
+    return coloredPolygon;
+}
 }; // namespace tod_helper::ColoredPolygon

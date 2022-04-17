@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="launchDirectControl"/>
-    <arg name="vehicleID"/>
+
+    <arg name="launchSafeCorridorControl"/>
 
     <include file="$(find tod_command_creation)/launch/tod_command_creation.launch">
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
         <arg name="isVehicle" value="true"/>
         <arg name="isOperator" value="false"/>
     </include>
@@ -13,4 +13,9 @@
         if="$(eval launchDirectControl)">
     </include>
 
+    <include file="$(find tod_safe_corridor)/launch/tod_safe_corridor.launch"
+        if="$(eval launchSafeCorridorControl)">
+        <arg name="isVehicle" value="true"/>
+        <arg name="isOperator" value="false"/>
+    </include>
 </launch>

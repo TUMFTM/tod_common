@@ -7,7 +7,6 @@
     <include file="$(find tod_transform)/launch/tod_transform.launch">
         <arg name="isVehicle" value="true"/>
         <arg name="isOperator" value="false"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/vehicle/vehicle_logging.launch"
