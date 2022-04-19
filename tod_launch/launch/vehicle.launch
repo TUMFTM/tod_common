@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID" default="lgsvl"/> <!-- tum-q7, rc-car. -->
-    <arg name="mode" default="playbackAll"/> <!-- vehicle, playbackAll, playbackSim, onlySim -->
+    <arg name="vehicleID" default="lgsvl"/> <!-- rc-car -->
+    <arg name="mode" default="onlySim"/> <!-- vehicle, playbackAll, playbackSim, onlySim -->
 
+    <param name="/vehicleID" type="string" value="$(arg vehicleID)" />
     <!-- Vehicle Interface -->
     <arg name="launchVehicleBridge" default="true"/>
 
     <!-- Control -->
     <arg name="launchDirectControl" default="true"/>
+    <arg name="launchSafeCorridorControl" default="true"/>
 
     <!-- Perception -->
     <arg name="launchVideo" default="true"/>
@@ -18,7 +20,7 @@
 
     <include file="$(find tod_launch)/launch/vehicle/vehicle_vehicle_interface.launch">
         <arg name="launchVehicleBridge" value="$(arg launchVehicleBridge)"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/><!-- for starting correct bridge --> 
         <arg name="mode" value="$(arg mode)"/>
     </include>
 
@@ -27,16 +29,15 @@
     <include file="$(find tod_launch)/launch/vehicle/vehicle_perception.launch">
         <arg name="launchVideo" value="$(arg launchVideo)"/>
         <arg name="launchLidar" value="$(arg launchLidar)"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/vehicle/vehicle_control.launch">
         <arg name="launchDirectControl" value="$(arg launchDirectControl)"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="launchSafeCorridorControl" value="$(arg launchSafeCorridorControl)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/vehicle/vehicle_common.launch">
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
+        <arg name="vehicleID" value="$(arg vehicleID)"/><!-- for playback and transforms --> 
         <arg name="mode" value="$(arg mode)"/>
         <arg name="launchLogging" value="$(arg launchLogging)"/>
     </include>

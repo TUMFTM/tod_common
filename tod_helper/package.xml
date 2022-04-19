@@ -4,7 +4,7 @@
 <version>1.0.0</version>
 <description>The tod_helper package</description>
 
-<maintainer email="feiler@ftm.mw.tum.de">Johannes Feiler</maintainer>
+<maintainer email="johannes.feiler@tum.de">Johannes Feiler</maintainer>
 
 <license>LGPLv3</license>
 
@@ -34,6 +34,4 @@
 
 <exec_depend>roscpp</exec_depend>
 
-<export>
-</export>
 </package>

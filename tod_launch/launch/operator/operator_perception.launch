@@ -1,24 +1,16 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID"/>
     <arg name="launchVideo"/>
     <arg name="launchLidar"/>
     <arg name="launchProjection"/>
     <arg name="launchAudio"/>
 
-    <include file="$(find tod_video)/launch/tod_video.launch" if="$(eval launchVideo)">
-        <arg name="isVehicle" value="false"/>
-        <arg name="isOperator" value="true"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
+    <include file="$(find tod_video)/launch/tod_video_operator.launch" if="$(eval launchVideo)">
+        <arg name="adaptVideoParamsEnabled" default="true"/>
+        <arg name="imageOutputFormat" default="i420"/>
     </include>
 
-    <include file="$(find tod_lidar)/launch/tod_lidar.launch" if="$(eval launchLidar)">
-        <arg name="isVehicle" value="false"/>
-        <arg name="isOperator" value="true"/>
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
-    </include>
+    <include file="$(find tod_lidar)/launch/tod_lidar_operator.launch" if="$(eval launchLidar)"/>
 
-    <include file="$(find tod_projection)/launch/tod_projection.launch" if="$(eval launchProjection)">
-        <arg name="vehicleID" value="$(arg vehicleID)"/>
-    </include>
+    <include file="$(find tod_projection)/launch/tod_projection.launch" if="$(eval launchProjection)"/>
 </launch>
