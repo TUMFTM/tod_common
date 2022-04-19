@@ -8,7 +8,7 @@ static const int RX_MQTT = 1883; // same for operator and vehicle
 
 enum VehiclePorts { // only what is sent via udp
     RX_PRIMARYCONTROL_COMMAND = 70000,
-    RX_SAFECORRIDORCONTROL_COMMAND = 70001,         // NOT FOR OPEN SOURCE
+    RX_SAFECORRIDORCONTROL_COMMAND = 70001,
     RX_SECONDARY_COMMAND = 70003,
     RX_SAFETY_DRIVER_STATUS_AUTOBOX = 60000,
     RX_VEHICLEDATA_AUTOBOX = 60001,

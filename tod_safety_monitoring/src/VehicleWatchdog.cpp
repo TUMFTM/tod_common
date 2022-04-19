@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     ros::Subscriber trajectorySubs = nh.subscribe("/Vehicle/SafeCorridorControl/trajectory_control_command",
         5, trajectory_callback);
 
-    durationCheckVehData = std::make_shared<tod_safety_monitoring::MaxDurationTest>(0.1,
+    durationCheckVehData = std::make_shared<tod_safety_monitoring::MaxDurationTest>(0.4,
         static_cast<tod_safety_monitoring::ErrorLvl>(2), "VehData", "Duration Test exceeded");
     monitor->add_periodic_test(durationCheckVehData);
 
