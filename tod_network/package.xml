@@ -3,7 +3,7 @@
     <name>tod_network</name>
     <version>1.0.0</version>
     <description>the tod_network library</description>
-    <maintainer email="feiler@ftm.mw.tum.de">Johannes Feiler</maintainer>
+    <maintainer email="johannes.feiler@tum.de">Johannes Feiler</maintainer>
     <license>LGPLv3</license>
     <buildtool_depend>catkin</buildtool_depend>
     <build_depend>roscpp</build_depend>
