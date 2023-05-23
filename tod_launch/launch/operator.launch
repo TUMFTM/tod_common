@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicleID" default="lgsvl"/>  <!-- lgsvl, rc-car -->
+    <arg name="vehicleID" default="tum-q7"/>  <!-- lgsvl, rc-car -->
     
     <param name="/vehicleID" type="string" value="$(arg vehicleID)" />
     
@@ -19,6 +19,7 @@
     <!-- Control -->
     <arg name="launchDirectControl" default="true"/>
     <arg name="launchSafeCorridorControl" default="true"/>
+    <arg name="launchSharedControl" default="true"/>
 
     <!-- Common -->
     <arg name="launchMultiplot" default="false"/>
@@ -41,6 +42,7 @@
 
     <include file="$(find tod_launch)/launch/operator/operator_control.launch">
         <arg name="launchSafeCorridorControl" value="$(arg launchSafeCorridorControl)"/>
+        <arg name="launchSharedControl" value="$(arg launchSharedControl)"/>
     </include>
 
     <include file="$(find tod_launch)/launch/operator/operator_common.launch">

@@ -30,4 +30,22 @@ inline tod_msgs::ColoredPolygon to_colored_polygon(const geometry_msgs::PolygonS
     }
     return coloredPolygon;
 }
+
+inline void transform(tod_msgs::ColoredPolygon &coloredPolygon, const geometry_msgs::TransformStamped &tf) {
+    for (tod_msgs::ColoredPoint& cpt : coloredPolygon.points) {
+        geometry_msgs::PoseStamped poseInSourceFrame, poseInTargetFrame;
+        poseInSourceFrame.header.frame_id = tf.child_frame_id;
+        poseInSourceFrame.pose.position.x = cpt.point.x;
+        poseInSourceFrame.pose.position.y = cpt.point.y;
+        poseInSourceFrame.pose.position.z = cpt.point.z;
+        tf2::Quaternion quat(0.0, 0.0, 0.0);
+        tf2::convert(quat, poseInSourceFrame.pose.orientation);
+        tf2::doTransform<geometry_msgs::PoseStamped>(poseInSourceFrame, poseInTargetFrame, tf);
+        cpt.point.x = poseInTargetFrame.pose.position.x;
+        cpt.point.y = poseInTargetFrame.pose.position.y;
+        cpt.point.z = poseInTargetFrame.pose.position.z;
+    }
+    coloredPolygon.header.frame_id = tf.header.frame_id;
+}
+
 }; // namespace tod_helper::ColoredPolygon
